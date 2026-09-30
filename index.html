@@ -19,7 +19,7 @@
 <div class="statusbar" role="status" aria-live="polite"><span><i id="dot" class="dot"></i><span id="connection">กำลังเชื่อมต่อฐานข้อมูล…</span></span><span id="updated">ยังไม่มีข้อมูลจากอุปกรณ์</span></div>
 <div id="error" role="alert" hidden></div><section class="cards" id="cards" aria-label="ค่าล่าสุดของโรงเรือน"></section>
 <section class="history"><div class="sectionhead"><div><h2>มองย้อนดูการเติบโต</h2><p>ประวัติค่าที่ส่งจากโรงเรือน • ล่าสุดสูงสุด 120 รายการ</p></div><label> <span class="eyebrow" style="margin-right:8px">METRIC</span><select id="metric" aria-label="เลือกค่าที่ต้องการดูกราฟ"></select></label></div><div class="plot"><canvas id="history-chart" role="img" aria-label="กราฟข้อมูลย้อนหลังของค่าที่เลือก"></canvas></div><div class="caption" id="history-status">กำลังรอข้อมูลย้อนหลัง…</div></section>
-<div class="notice">อัปเดตข้อมูลทุก 10 วินาทีเมื่ออุปกรณ์เชื่อมต่อ • แสดงเวลาประเทศไทย (Asia/Bangkok)</div>
+<div class="notice">อัปเดตข้อมูลทุก 5 วินาทีเมื่ออุปกรณ์เชื่อมต่อ • แสดงเวลาประเทศไทย (Asia/Bangkok)</div>
 </main><footer><span>MYCELIUM / IoT Design & Development</span><span>ESP32 → Firebase → Dashboard · <a href="https://github.com/wiwatpromwihan/freeboard">Source code ↗</a></span></footer>
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js';
@@ -55,7 +55,7 @@ const validNumber=v=>typeof v==='number'&&Number.isFinite(v);
 function error(scope,e){errors.set(scope,`${scope}: ${e.message}`);showErrors();}
 function clearError(scope){errors.delete(scope);showErrors();}
 function showErrors(){$('error').hidden=errors.size===0;$('error').textContent=[...errors.values()].join(' • ');}
-function status(){const age=latestTimestamp?Date.now()/1000-latestTimestamp:Infinity;const fresh=connected&&age<40&&age>=-60;$('dot').classList.toggle('live',fresh);$('connection').textContent=!connected?'ขาดการเชื่อมต่อ • กำลังเชื่อมต่อใหม่':!latestTimestamp?'เชื่อมต่อแล้ว • รอ ESP32 ส่งข้อมูล':fresh?'ออนไลน์ • รับข้อมูลแบบเรียลไทม์':'เชื่อมต่อแล้ว • ข้อมูลจากอุปกรณ์ยังไม่อัปเดต';}
+function status(){const age=latestTimestamp?Date.now()/1000-latestTimestamp:Infinity;const fresh=connected&&age<25&&age>=-60;$('dot').classList.toggle('live',fresh);$('connection').textContent=!connected?'ขาดการเชื่อมต่อ • กำลังเชื่อมต่อใหม่':!latestTimestamp?'เชื่อมต่อแล้ว • รอ ESP32 ส่งข้อมูล':fresh?'ออนไลน์ • รับข้อมูลแบบเรียลไทม์':'เชื่อมต่อแล้ว • ข้อมูลจากอุปกรณ์ยังไม่อัปเดต';}
 let chart;
 if(typeof Chart==='undefined'){error('กราฟ',new Error('โหลด Chart.js ไม่สำเร็จ กรุณาตรวจอินเทอร์เน็ตและเปิดหน้าใหม่'));}
 else{chart=new Chart($('history-chart'),{type:'line',data:{labels:[],datasets:[{label:'',data:[],borderColor:'#527456',backgroundColor:'#52745616',fill:true,tension:.27,pointRadius:0,pointHoverRadius:5,borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,animation:false,interaction:{intersect:false,mode:'index'},plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{maxTicksLimit:6,color:'#7c897d',font:{size:10}}},y:{title:{display:true,text:''},ticks:{color:'#7c897d'},grid:{color:'#edf0e8'}}}}});}
@@ -67,7 +67,7 @@ try{
  onValue(ref(db,'latest'),s=>{clearError('ค่าล่าสุด');const data=s.val()||{};latestTimestamp=validNumber(data.timestamp)&&data.timestamp>0?data.timestamp:null;for(const f of fields){renderBattery(f,data);const v=data[f.key];$('value-'+f.key).textContent=validNumber(v)?v.toLocaleString('en-US',{minimumFractionDigits:f.dec,maximumFractionDigits:f.dec}):'—';$('fill-'+f.key).style.width=(validNumber(v)?Math.min(100,Math.max(0,(v-f.min)/(f.max-f.min)*100)):0)+'%';}$('updated').textContent=latestTimestamp?'อัปเดต '+formatTime(latestTimestamp):'ยังไม่มีข้อมูลจากอุปกรณ์';status();},e=>error('ค่าล่าสุด',e));
  onValue(query(ref(db,'history'),orderByChild('timestamp'),limitToLast(120)),s=>{clearError('ประวัติ');records=[];s.forEach(child=>{const r=child.val();if(r&&validNumber(r.timestamp)&&r.timestamp>0)records.push(r);});records.sort((a,b)=>a.timestamp-b.timestamp);draw();},e=>error('ประวัติ',e));
  // Local freshness indicator only. No polling or periodic database reads.
- setInterval(status,5000);
+ setInterval(status,3000);
 }catch(e){error('Firebase',e);}
 </script>
 </body></html>

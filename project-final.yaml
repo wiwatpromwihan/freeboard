@@ -197,7 +197,8 @@ sensor:
       return std::max(0.0, 100.0 * (1.0 - elapsed / 5400.0));
 
 interval:
-  - interval: 10s
+  - interval: 5s
+    startup_delay: 0s
     then:
       - if:
           condition:
@@ -212,7 +213,7 @@ interval:
             - component.update: substrate_moisture_battery
             - component.update: illuminance_battery
             - component.update: water_level_battery
-            - logger.log: "Sending mushroom greenhouse measurements"
+            - logger.log: "Sending mushroom greenhouse measurements (latest)"
             - http_request.send:
                 method: PUT
                 url: "https://iot-224-default-rtdb.asia-southeast1.firebasedatabase.app/latest.json"
@@ -241,6 +242,20 @@ interval:
                 on_error:
                   then:
                     - logger.log: "Latest upload failed"
+          else:
+            - logger.log: "Skip Firebase: WiFi or time not ready"
+
+  - interval: 10s
+    startup_delay: 2.5s
+    then:
+      - if:
+          condition:
+            and:
+              - wifi.connected:
+              - lambda: |-
+                  return id(sntp_time).now().is_valid();
+          then:
+            - logger.log: "Sending mushroom greenhouse measurements (history)"
             - http_request.send:
                 method: POST
                 url: "https://iot-224-default-rtdb.asia-southeast1.firebasedatabase.app/history.json"
@@ -269,5 +284,3 @@ interval:
                 on_error:
                   then:
                     - logger.log: "History upload failed"
-          else:
-            - logger.log: "Skip Firebase: WiFi or time not ready"

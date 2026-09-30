@@ -10,7 +10,7 @@ Database URL: https://iot-224-default-rtdb.asia-southeast1.firebasedatabase.app
 
 ```text
 ESP32 / ESPHome (esp32dev, esp-idf)
-  └─ Wi-Fi + SNTP พร้อม → ทุก 10 วินาที
+  └─ Wi-Fi + SNTP พร้อม → ทุก 5 วินาที
       ├─ HTTPS PUT  /latest.json  → ค่าล่าสุด
       └─ HTTPS POST /history.json → ประวัติพร้อม timestamp
                     │
@@ -103,10 +103,10 @@ cd "$HOME/.local/share/iot-224/firmware"
 ## ตรวจการทำงาน
 
 1. Log ต้องเชื่อม Wi-Fi และแสดง `Time synchronized` ก่อนส่ง หากยังไม่พร้อมจะเห็น `Skip Firebase: WiFi or time not ready`
-2. เห็น `Latest HTTP status = 200` และ `History HTTP status = 200` ทุกประมาณ 10 วินาที
-3. Firebase มี `/latest` ครบ 7 ฟิลด์ และ `/history` เพิ่มรายการ push key ใหม่
+2. เห็น `Latest HTTP status = 200` และ `History HTTP status = 200` ทุกประมาณ 5 วินาที
+3. Firebase มี `/latest` ครบ 13 ฟิลด์ และ `/history` เพิ่มรายการ push key ใหม่
 4. เปิด Dashboard แล้วค่าการ์ดและกราฟเปลี่ยนเองโดยไม่กด refresh
-5. ถอด USB แล้วหลัง 40 วินาทีหน้าเว็บจะระบุข้อมูลอุปกรณ์ยังไม่อัปเดต แม้เว็บยังเชื่อม Firebase อยู่
+5. ถอด USB แล้วหลัง 25 วินาทีหน้าเว็บจะระบุข้อมูลอุปกรณ์ยังไม่อัปเดต แม้เว็บยังเชื่อม Firebase อยู่
 
 กราฟเลือกดูได้ครบ 6 ค่า โดย subscribe `query(ref(db, 'history'), orderByChild('timestamp'), limitToLast(120))` และใช้ `onValue` ไม่มี polling ข้อมูล ทุก 5 วินาทีมีเพียงการตรวจอายุ timestamp บนหน้าเว็บเพื่อแสดงสถานะเท่านั้น เวลาแสดงเป็น Asia/Bangkok ส่วนข้อมูลเก็บเป็น Unix seconds
 
