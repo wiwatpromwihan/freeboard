@@ -127,3 +127,14 @@ PUT และ POST เป็นสอง request แยกกัน ไม่ at
 - https://firebase.google.com/docs/database/web/read-and-write
 - https://firebase.google.com/docs/cli
 - https://docs.github.com/en/rest/pages/pages
+
+## ผลทดสอบบนเครื่องจริง — 30 กันยายน 2026
+
+- ESPHome 2026.8.2: validation, compile และ USB upload สำเร็จ บอร์ด ESP32-D0WD-V3 ที่ `/dev/cu.usbserial-10`
+- Log หลังบูตแสดงการข้ามส่งเมื่อเวลายังไม่พร้อม ตามด้วย `Time synchronized` และ Latest / History HTTP 200
+- GET root ตอบ 401 Permission denied; `/latest` และ query `/history` ตอบ 200 พร้อม 6 ค่าและ timestamp
+- GitHub Pages เผยแพร่สำเร็จ หน้าเว็บแสดงออนไลน์ การ์ดเปลี่ยนค่าและประวัติเพิ่มเองโดยไม่ reload; ทดสอบเปลี่ยนกราฟเป็น CO₂ แล้ว
+- ตรวจหน้าจอ desktop และมือถือกว้าง 390 px ไม่มีการล้นแนวนอน
+- ตรวจรายการไฟล์ Git แล้วไม่มี secrets.yaml, firmware, environment หรือ log
+
+ค่าบน Dashboard จะเปลี่ยนต่อเมื่อ ESP32 มีไฟเลี้ยงและเชื่อมอินเทอร์เน็ตได้ ผลทดสอบนี้เป็นสถานะ ณ เวลาที่ทดสอบ ไม่ใช่การรับรองว่าบอร์ดจะออนไลน์ตลอดเวลา
