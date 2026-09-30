@@ -1,0 +1,139 @@
+# Classroom simulation. Template sensors are not physical measurements.
+esphome:
+  name: mushroom-iot-224
+
+esp32:
+  board: esp32dev
+  framework:
+    type: esp-idf
+
+logger:
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  power_save_mode: none
+
+time:
+  - platform: sntp
+    id: sntp_time
+    timezone: Asia/Bangkok
+    on_time_sync:
+      then:
+        - logger.log: "Time synchronized"
+
+http_request:
+  timeout: 10s
+
+sensor:
+  - platform: template
+    id: air_temperature
+    name: "Air Temperature"
+    unit_of_measurement: "°C"
+    accuracy_decimals: 1
+    update_interval: 5s
+    lambda: |-
+      return 24.0 + random_float() * (32.0 - 24.0);
+
+  - platform: template
+    id: air_humidity
+    name: "Air Humidity"
+    unit_of_measurement: "%"
+    accuracy_decimals: 1
+    update_interval: 5s
+    lambda: |-
+      return 75.0 + random_float() * (95.0 - 75.0);
+
+  - platform: template
+    id: co2
+    name: "CO2"
+    unit_of_measurement: "ppm"
+    accuracy_decimals: 0
+    update_interval: 5s
+    lambda: |-
+      return 450.0 + random_float() * (1800.0 - 450.0);
+
+  - platform: template
+    id: substrate_moisture
+    name: "Substrate Moisture"
+    unit_of_measurement: "%"
+    accuracy_decimals: 1
+    update_interval: 5s
+    lambda: |-
+      return 55.0 + random_float() * (75.0 - 55.0);
+
+  - platform: template
+    id: illuminance
+    name: "Illuminance"
+    unit_of_measurement: "lx"
+    accuracy_decimals: 0
+    update_interval: 5s
+    lambda: |-
+      return 100.0 + random_float() * (800.0 - 100.0);
+
+  - platform: template
+    id: water_level
+    name: "Water Level"
+    unit_of_measurement: "%"
+    accuracy_decimals: 1
+    update_interval: 5s
+    lambda: |-
+      return 20.0 + random_float() * (100.0 - 20.0);
+
+interval:
+  - interval: 10s
+    then:
+      - if:
+          condition:
+            and:
+              - wifi.connected:
+              - lambda: |-
+                  return id(sntp_time).now().is_valid();
+          then:
+            - logger.log: "Sending mushroom greenhouse measurements"
+            - http_request.send:
+                method: PUT
+                url: "https://iot-224-default-rtdb.asia-southeast1.firebasedatabase.app/latest.json"
+                request_headers:
+                  Content-Type: application/json
+                json: |-
+                  root["air_temperature"] = id(air_temperature).state;
+                  root["air_humidity"] = id(air_humidity).state;
+                  root["co2"] = id(co2).state;
+                  root["substrate_moisture"] = id(substrate_moisture).state;
+                  root["illuminance"] = id(illuminance).state;
+                  root["water_level"] = id(water_level).state;
+                  root["timestamp"] = id(sntp_time).now().timestamp;
+                on_response:
+                  then:
+                    - logger.log:
+                        format: "Latest HTTP status = %d"
+                        args:
+                          - response->status_code
+                on_error:
+                  then:
+                    - logger.log: "Latest upload failed"
+            - http_request.send:
+                method: POST
+                url: "https://iot-224-default-rtdb.asia-southeast1.firebasedatabase.app/history.json"
+                request_headers:
+                  Content-Type: application/json
+                json: |-
+                  root["air_temperature"] = id(air_temperature).state;
+                  root["air_humidity"] = id(air_humidity).state;
+                  root["co2"] = id(co2).state;
+                  root["substrate_moisture"] = id(substrate_moisture).state;
+                  root["illuminance"] = id(illuminance).state;
+                  root["water_level"] = id(water_level).state;
+                  root["timestamp"] = id(sntp_time).now().timestamp;
+                on_response:
+                  then:
+                    - logger.log:
+                        format: "History HTTP status = %d"
+                        args:
+                          - response->status_code
+                on_error:
+                  then:
+                    - logger.log: "History upload failed"
+          else:
+            - logger.log: "Skip Firebase: WiFi or time not ready"

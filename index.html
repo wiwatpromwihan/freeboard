@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#173f35">
+<title>Mycelium • โรงเรือนเพาะเห็ด | IoT 224</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+<style>
+:root{--ink:#173f35;--muted:#6f7d74;--line:#dde4da;--paper:#f5f6ef;--green:#4b7051}*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:15px 'Manrope','IBM Plex Sans Thai',sans-serif}header{border-bottom:1px solid var(--line);background:#fffefa}.nav,main,footer{max-width:1240px;margin:auto}.nav{display:flex;align-items:center;justify-content:space-between;padding:23px 32px}.brand{display:flex;align-items:center;gap:12px;font-size:23px;font-weight:800;letter-spacing:-1px}.logo{display:grid;place-items:center;background:var(--ink);color:#eff2bb;width:39px;height:39px;border-radius:12px}.nav small{font-size:11px;letter-spacing:2px;color:var(--muted)}main{padding:42px 32px}.hero{display:grid;grid-template-columns:1fr 285px;gap:35px;align-items:center}.eyebrow{font-size:11px;font-weight:800;letter-spacing:2px;color:var(--green)}h1{font-size:clamp(29px,4vw,44px);line-height:1.35;letter-spacing:-1.3px;margin:12px 0}p{line-height:1.8;color:var(--muted)}.hero p{max-width:650px;margin:0}.art{position:relative;height:170px;overflow:hidden;border-radius:95px 95px 25px 25px;background:#e5ead6}.art svg{height:100%;width:100%}.statusbar{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;margin:30px 0 23px;padding:15px 18px;border:1px solid var(--line);border-radius:12px;background:#edf1e7;font-size:12px}.dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#9aab97;margin-right:8px}.dot.live{background:#4c9062;box-shadow:0 0 0 4px #4c906219}.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:17px}.card{background:#fffefa;border:1px solid var(--line);border-radius:17px;padding:22px;min-height:195px}.cardhead{display:flex;align-items:center;justify-content:space-between;gap:10px}.card h2{font-size:14px;font-weight:600;margin:0}.icon{display:grid;place-items:center;width:35px;height:35px;border-radius:10px;background:#eef1e5;font-size:19px}.value{font-size:43px;font-weight:700;letter-spacing:-2px;line-height:1.4;margin-top:14px;font-variant-numeric:tabular-nums}.unit{font-size:16px;letter-spacing:0;font-weight:500;color:var(--muted);margin-left:8px}.scale{height:4px;background:#edf0e6;border-radius:4px;margin:14px 0 9px;overflow:hidden}.fill{height:100%;width:0;background:var(--green);transition:width .5s}.range{display:flex;justify-content:space-between;font-size:10px;color:var(--muted)}.history{background:#fffefa;border:1px solid var(--line);border-radius:17px;margin-top:25px;padding:26px}.sectionhead{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}.sectionhead h2{font-size:20px;margin:0}.sectionhead p{font-size:12px;margin:4px 0 0}select{border:1px solid var(--line);border-radius:9px;padding:11px 15px;background:var(--paper);color:var(--ink);font:inherit;font-size:13px;max-width:100%}.plot{height:280px;margin-top:23px}.caption{font-size:11px;color:var(--muted);margin-top:14px}.notice{font-size:12px;border-left:3px solid #b9c38d;padding:3px 13px;margin-top:24px;line-height:1.8;color:var(--muted)}footer{display:flex;justify-content:space-between;gap:16px;padding:0 32px 25px;font-size:11px;color:var(--muted)}a{color:inherit}#error{color:#9a432c;margin:12px 0;line-height:1.7}button:focus-visible,select:focus-visible,a:focus-visible{outline:3px solid #91ae5c;outline-offset:3px}@media(max-width:800px){.hero{grid-template-columns:1fr 170px}.art{height:145px}.cards{grid-template-columns:repeat(2,1fr)}.nav,main{padding-left:20px;padding-right:20px}}@media(max-width:500px){main{padding-top:27px}.hero{grid-template-columns:1fr}.art{display:none}.nav small{letter-spacing:0}.brand{font-size:21px}.cards{gap:11px}.card{padding:16px;min-height:180px}.card h2{font-size:12px}.icon{width:27px;height:27px;font-size:15px}.value{font-size:34px}.unit{font-size:12px;margin-left:5px}.history{padding:18px}.range{font-size:9px}.plot{height:250px}footer{padding-left:20px;padding-right:20px;flex-wrap:wrap}}
+</style>
+</head>
+<body>
+<header><div class="nav"><div class="brand"><span class="logo" aria-hidden="true">♧</span>mycelium<span style="color:#92a27d">.</span></div><small>SMART GREENHOUSE / 224</small></div></header>
+<main>
+<section class="hero"><div><div class="eyebrow">GROW WITH UNDERSTANDING</div><h1>โรงเรือนเล็ก ๆ<br>ที่เข้าใจทุกการเติบโต</h1><p>ติดตามสภาพแวดล้อมโรงเรือนเพาะเห็ด ทั้งอากาศ วัสดุเพาะ แสง และน้ำ<br>ข้อมูลจำลองจาก ESP32 ส่งตรงถึงคุณแบบเรียลไทม์</p></div><div class="art" aria-hidden="true"><svg viewBox="0 0 285 170" fill="none"><circle cx="234" cy="37" r="18" fill="#c5cf9e"/><path d="M0 155Q70 121 145 147T285 139V170H0" fill="#c8d3b1"/><path d="M115 148L121 77H146L155 148" fill="#fdf9df" stroke="#355b43" stroke-width="2"/><path d="M69 85C72 16 191 7 204 85C163 101 111 102 69 85Z" fill="#547854"/><path d="M71 85Q137 114 203 85" stroke="#244d3b" stroke-width="3"/><ellipse cx="111" cy="56" rx="11" ry="7" fill="#d5dea9" transform="rotate(-24 111 56)"/><ellipse cx="159" cy="48" rx="8" ry="6" fill="#d5dea9"/><path d="M188 154L191 113H208L215 155" fill="#fff9e1" stroke="#355b43" stroke-width="2"/><path d="M166 118C166 79 229 73 241 115Q200 130 166 118" fill="#a2b379"/><path d="M40 149Q41 126 28 118M40 139Q56 133 58 120" stroke="#547854" stroke-width="3" stroke-linecap="round"/></svg></div></section>
+<div class="statusbar" role="status" aria-live="polite"><span><i id="dot" class="dot"></i><span id="connection">กำลังเชื่อมต่อฐานข้อมูล…</span></span><span id="updated">ยังไม่มีข้อมูลจากอุปกรณ์</span></div>
+<div id="error" role="alert" hidden></div><section class="cards" id="cards" aria-label="ค่าล่าสุดของโรงเรือน"></section>
+<section class="history"><div class="sectionhead"><div><h2>มองย้อนดูการเติบโต</h2><p>ประวัติค่าที่ส่งจากโรงเรือน • ล่าสุดสูงสุด 120 รายการ</p></div><label> <span class="eyebrow" style="margin-right:8px">METRIC</span><select id="metric" aria-label="เลือกค่าที่ต้องการดูกราฟ"></select></label></div><div class="plot"><canvas id="history-chart" role="img" aria-label="กราฟข้อมูลย้อนหลังของค่าที่เลือก"></canvas></div><div class="caption" id="history-status">กำลังรอข้อมูลย้อนหลัง…</div></section>
+<div class="notice">โครงงาน IoT เพื่อการเรียนรู้ • ค่าทั้งหมดสุ่มจาก Template Sensor ทุก 5 วินาที และส่งทุก 10 วินาทีเมื่อ Wi-Fi และเวลาพร้อม ช่วงที่แสดงคือช่วงจำลอง ไม่ใช่เกณฑ์แนะนำสำหรับเห็ดทุกชนิด</div>
+</main><footer><span>MYCELIUM / IoT Design & Development</span><span>ESP32 → Firebase → Dashboard · <a href="https://github.com/wiwatpromwihan/freeboard">Source code ↗</a></span></footer>
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js';
+import { getDatabase, ref, onValue, query, orderByChild, limitToLast } from 'https://www.gstatic.com/firebasejs/11.10.0/firebase-database.js';
+import { firebaseConfig } from './firebase-config.js';
+const fields=[
+ {key:'air_temperature',label:'อุณหภูมิอากาศ',unit:'°C',min:24,max:32,dec:1,icon:'◉'},
+ {key:'air_humidity',label:'ความชื้นอากาศ',unit:'%',min:75,max:95,dec:1,icon:'♧'},
+ {key:'co2',label:'คาร์บอนไดออกไซด์',unit:'ppm',min:450,max:1800,dec:0,icon:'≋'},
+ {key:'substrate_moisture',label:'ความชื้นวัสดุเพาะ',unit:'%',min:55,max:75,dec:1,icon:'▧'},
+ {key:'illuminance',label:'ความสว่าง',unit:'lx',min:100,max:800,dec:0,icon:'☼'},
+ {key:'water_level',label:'ระดับน้ำถังพ่นหมอก',unit:'%',min:20,max:100,dec:1,icon:'≈'}
+];
+const $=id=>document.getElementById(id);
+for(const f of fields){
+ const card=document.createElement('article');card.className='card';
+ card.innerHTML=`<div class="cardhead"><h2>${f.label}</h2><span class="icon" aria-hidden="true">${f.icon}</span></div><div class="value"><span id="value-${f.key}">—</span><span class="unit">${f.unit}</span></div><div class="scale"><div class="fill" id="fill-${f.key}"></div></div><div class="range"><span>ช่วงจำลอง</span><span>${f.min.toLocaleString()}–${f.max.toLocaleString()} ${f.unit}</span></div>`;
+ $('cards').append(card);const option=document.createElement('option');option.value=f.key;option.textContent=f.label;$('metric').append(option);
+}
+let records=[],latestTimestamp=null,connected=false;
+const errors=new Map();
+const formatTime=t=>new Date(t*1000).toLocaleString('th-TH',{timeZone:'Asia/Bangkok',day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit',second:'2-digit'});
+const validNumber=v=>typeof v==='number'&&Number.isFinite(v);
+function error(scope,e){errors.set(scope,`${scope}: ${e.message}`);showErrors();}
+function clearError(scope){errors.delete(scope);showErrors();}
+function showErrors(){$('error').hidden=errors.size===0;$('error').textContent=[...errors.values()].join(' • ');}
+function status(){const age=latestTimestamp?Date.now()/1000-latestTimestamp:Infinity;const fresh=connected&&age<40&&age>=-60;$('dot').classList.toggle('live',fresh);$('connection').textContent=!connected?'ขาดการเชื่อมต่อ • กำลังเชื่อมต่อใหม่':!latestTimestamp?'เชื่อมต่อแล้ว • รอ ESP32 ส่งข้อมูล':fresh?'ออนไลน์ • รับข้อมูลแบบเรียลไทม์':'เชื่อมต่อแล้ว • ข้อมูลจากอุปกรณ์ยังไม่อัปเดต';}
+let chart;
+if(typeof Chart==='undefined'){error('กราฟ',new Error('โหลด Chart.js ไม่สำเร็จ กรุณาตรวจอินเทอร์เน็ตและเปิดหน้าใหม่'));}
+else{chart=new Chart($('history-chart'),{type:'line',data:{labels:[],datasets:[{label:'',data:[],borderColor:'#527456',backgroundColor:'#52745616',fill:true,tension:.27,pointRadius:0,pointHoverRadius:5,borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,animation:false,interaction:{intersect:false,mode:'index'},plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{maxTicksLimit:6,color:'#7c897d',font:{size:10}}},y:{title:{display:true,text:''},ticks:{color:'#7c897d'},grid:{color:'#edf0e8'}}}});}
+function draw(){const f=fields.find(f=>f.key===$('metric').value);if(chart){chart.data.labels=records.map(r=>formatTime(r.timestamp));chart.data.datasets[0].label=`${f.label} (${f.unit})`;chart.data.datasets[0].data=records.map(r=>validNumber(r[f.key])?r[f.key]:null);chart.options.scales.y.title.text=f.unit;chart.update();}$('history-status').textContent=records.length?`${records.length} รายการ • เวลาไทย (Asia/Bangkok) • ${formatTime(records[0].timestamp)} ถึง ${formatTime(records.at(-1).timestamp)}`:'ยังไม่มีประวัติ • รอ ESP32 ส่งข้อมูล';}
+$('metric').addEventListener('change',draw);
+try{
+ const db=getDatabase(initializeApp(firebaseConfig));
+ onValue(ref(db,'.info/connected'),s=>{connected=s.val()===true;status();},e=>error('การเชื่อมต่อ',e));
+ onValue(ref(db,'latest'),s=>{clearError('ค่าล่าสุด');const data=s.val()||{};latestTimestamp=validNumber(data.timestamp)&&data.timestamp>0?data.timestamp:null;for(const f of fields){const v=data[f.key];$('value-'+f.key).textContent=validNumber(v)?v.toLocaleString('en-US',{minimumFractionDigits:f.dec,maximumFractionDigits:f.dec}):'—';$('fill-'+f.key).style.width=(validNumber(v)?Math.min(100,Math.max(0,(v-f.min)/(f.max-f.min)*100)):0)+'%';}$('updated').textContent=latestTimestamp?'อัปเดต '+formatTime(latestTimestamp):'ยังไม่มีข้อมูลจากอุปกรณ์';status();},e=>error('ค่าล่าสุด',e));
+ onValue(query(ref(db,'history'),orderByChild('timestamp'),limitToLast(120)),s=>{clearError('ประวัติ');records=[];s.forEach(child=>{const r=child.val();if(r&&validNumber(r.timestamp)&&r.timestamp>0)records.push(r);});records.sort((a,b)=>a.timestamp-b.timestamp);draw();},e=>error('ประวัติ',e));
+ // Local freshness indicator only. No polling or periodic database reads.
+ setInterval(status,5000);
+}catch(e){error('Firebase',e);}
+</script>
+</body></html>

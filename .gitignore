@@ -1,0 +1,8 @@
+secrets.yaml
+.venv/
+.esphome/
+.pioenvs/
+.piolibdeps/
+*debug*.log
+.DS_Store
+.setup-*
