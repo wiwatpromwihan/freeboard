@@ -21,6 +21,44 @@ time:
     on_time_sync:
       then:
         - logger.log: "Time synchronized"
+        - lambda: |-
+            if (id(battery_started_at) == 0) {
+              id(battery_started_at) = id(sntp_time).now().timestamp;
+            }
+            ESP_LOGI("battery", "Battery start epoch: %lu", static_cast<unsigned long>(id(battery_started_at)));
+
+# Store only the start epoch, not a constantly changing percentage.
+preferences:
+  flash_write_interval: 0s
+
+globals:
+  - id: battery_started_at
+    type: uint32_t
+    restore_value: yes
+    initial_value: '0'
+
+# Hold BOOT for 3–10 seconds after boot, then release to start a new demo.
+binary_sensor:
+  - platform: gpio
+    id: battery_reset_key
+    internal: true
+    pin:
+      number: GPIO0
+      mode: INPUT_PULLUP
+      inverted: true
+    filters:
+      - delayed_on_off: 30ms
+    on_click:
+      min_length: 3s
+      max_length: 10s
+      then:
+        - lambda: |-
+            if (id(sntp_time).now().is_valid()) {
+              id(battery_started_at) = id(sntp_time).now().timestamp;
+              ESP_LOGI("battery", "Battery reset: all devices at 100%%");
+            } else {
+              ESP_LOGW("battery", "Reset skipped: time not ready");
+            }
 
 http_request:
   timeout: 10s
@@ -80,6 +118,84 @@ sensor:
     lambda: |-
       return 20.0 + random_float() * (100.0 - 20.0);
 
+  - platform: template
+    id: air_temperature_battery
+    name: "Air Temperature Battery"
+    unit_of_measurement: "%"
+    device_class: battery
+    accuracy_decimals: 1
+    update_interval: 5s
+    lambda: |-
+      const auto now = id(sntp_time).now();
+      if (!now.is_valid() || id(battery_started_at) == 0) return NAN;
+      const double elapsed = std::max(0.0, double(now.timestamp) - double(id(battery_started_at)));
+      return std::max(0.0, 100.0 * (1.0 - elapsed / 7200.0));
+
+  - platform: template
+    id: air_humidity_battery
+    name: "Air Humidity Battery"
+    unit_of_measurement: "%"
+    device_class: battery
+    accuracy_decimals: 1
+    update_interval: 5s
+    lambda: |-
+      const auto now = id(sntp_time).now();
+      if (!now.is_valid() || id(battery_started_at) == 0) return NAN;
+      const double elapsed = std::max(0.0, double(now.timestamp) - double(id(battery_started_at)));
+      return std::max(0.0, 100.0 * (1.0 - elapsed / 8100.0));
+
+  - platform: template
+    id: co2_battery
+    name: "Co2 Battery"
+    unit_of_measurement: "%"
+    device_class: battery
+    accuracy_decimals: 1
+    update_interval: 5s
+    lambda: |-
+      const auto now = id(sntp_time).now();
+      if (!now.is_valid() || id(battery_started_at) == 0) return NAN;
+      const double elapsed = std::max(0.0, double(now.timestamp) - double(id(battery_started_at)));
+      return std::max(0.0, 100.0 * (1.0 - elapsed / 3600.0));
+
+  - platform: template
+    id: substrate_moisture_battery
+    name: "Substrate Moisture Battery"
+    unit_of_measurement: "%"
+    device_class: battery
+    accuracy_decimals: 1
+    update_interval: 5s
+    lambda: |-
+      const auto now = id(sntp_time).now();
+      if (!now.is_valid() || id(battery_started_at) == 0) return NAN;
+      const double elapsed = std::max(0.0, double(now.timestamp) - double(id(battery_started_at)));
+      return std::max(0.0, 100.0 * (1.0 - elapsed / 9000.0));
+
+  - platform: template
+    id: illuminance_battery
+    name: "Illuminance Battery"
+    unit_of_measurement: "%"
+    device_class: battery
+    accuracy_decimals: 1
+    update_interval: 5s
+    lambda: |-
+      const auto now = id(sntp_time).now();
+      if (!now.is_valid() || id(battery_started_at) == 0) return NAN;
+      const double elapsed = std::max(0.0, double(now.timestamp) - double(id(battery_started_at)));
+      return std::max(0.0, 100.0 * (1.0 - elapsed / 10800.0));
+
+  - platform: template
+    id: water_level_battery
+    name: "Water Level Battery"
+    unit_of_measurement: "%"
+    device_class: battery
+    accuracy_decimals: 1
+    update_interval: 5s
+    lambda: |-
+      const auto now = id(sntp_time).now();
+      if (!now.is_valid() || id(battery_started_at) == 0) return NAN;
+      const double elapsed = std::max(0.0, double(now.timestamp) - double(id(battery_started_at)));
+      return std::max(0.0, 100.0 * (1.0 - elapsed / 5400.0));
+
 interval:
   - interval: 10s
     then:
@@ -90,6 +206,12 @@ interval:
               - lambda: |-
                   return id(sntp_time).now().is_valid();
           then:
+            - component.update: air_temperature_battery
+            - component.update: air_humidity_battery
+            - component.update: co2_battery
+            - component.update: substrate_moisture_battery
+            - component.update: illuminance_battery
+            - component.update: water_level_battery
             - logger.log: "Sending mushroom greenhouse measurements"
             - http_request.send:
                 method: PUT
@@ -103,6 +225,12 @@ interval:
                   root["substrate_moisture"] = id(substrate_moisture).state;
                   root["illuminance"] = id(illuminance).state;
                   root["water_level"] = id(water_level).state;
+                  root["air_temperature_battery"] = id(air_temperature_battery).state;
+                  root["air_humidity_battery"] = id(air_humidity_battery).state;
+                  root["co2_battery"] = id(co2_battery).state;
+                  root["substrate_moisture_battery"] = id(substrate_moisture_battery).state;
+                  root["illuminance_battery"] = id(illuminance_battery).state;
+                  root["water_level_battery"] = id(water_level_battery).state;
                   root["timestamp"] = id(sntp_time).now().timestamp;
                 on_response:
                   then:
@@ -125,6 +253,12 @@ interval:
                   root["substrate_moisture"] = id(substrate_moisture).state;
                   root["illuminance"] = id(illuminance).state;
                   root["water_level"] = id(water_level).state;
+                  root["air_temperature_battery"] = id(air_temperature_battery).state;
+                  root["air_humidity_battery"] = id(air_humidity_battery).state;
+                  root["co2_battery"] = id(co2_battery).state;
+                  root["substrate_moisture_battery"] = id(substrate_moisture_battery).state;
+                  root["illuminance_battery"] = id(illuminance_battery).state;
+                  root["water_level_battery"] = id(water_level_battery).state;
                   root["timestamp"] = id(sntp_time).now().timestamp;
                 on_response:
                   then:
