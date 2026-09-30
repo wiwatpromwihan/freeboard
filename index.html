@@ -18,7 +18,7 @@
 <div class="statusbar" role="status" aria-live="polite"><span><i id="dot" class="dot"></i><span id="connection">กำลังเชื่อมต่อฐานข้อมูล…</span></span><span id="updated">ยังไม่มีข้อมูลจากอุปกรณ์</span></div>
 <div id="error" role="alert" hidden></div><section class="cards" id="cards" aria-label="ค่าล่าสุดของโรงเรือน"></section>
 <section class="history"><div class="sectionhead"><div><h2>มองย้อนดูการเติบโต</h2><p>ประวัติค่าที่ส่งจากโรงเรือน • ล่าสุดสูงสุด 120 รายการ</p></div><label> <span class="eyebrow" style="margin-right:8px">METRIC</span><select id="metric" aria-label="เลือกค่าที่ต้องการดูกราฟ"></select></label></div><div class="plot"><canvas id="history-chart" role="img" aria-label="กราฟข้อมูลย้อนหลังของค่าที่เลือก"></canvas></div><div class="caption" id="history-status">กำลังรอข้อมูลย้อนหลัง…</div></section>
-<div class="notice">โครงงาน IoT เพื่อการเรียนรู้ • ค่าทั้งหมดสุ่มจาก Template Sensor ทุก 5 วินาที และส่งทุก 10 วินาทีเมื่อ Wi-Fi และเวลาพร้อม ช่วงที่แสดงคือช่วงจำลอง ไม่ใช่เกณฑ์แนะนำสำหรับเห็ดทุกชนิด</div>
+<div class="notice">อัปเดตข้อมูลทุก 10 วินาทีเมื่ออุปกรณ์เชื่อมต่อ • แสดงเวลาประเทศไทย (Asia/Bangkok)</div>
 </main><footer><span>MYCELIUM / IoT Design & Development</span><span>ESP32 → Firebase → Dashboard · <a href="https://github.com/wiwatpromwihan/freeboard">Source code ↗</a></span></footer>
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js';
@@ -35,7 +35,7 @@ const fields=[
 const $=id=>document.getElementById(id);
 for(const f of fields){
  const card=document.createElement('article');card.className='card';
- card.innerHTML=`<div class="cardhead"><h2>${f.label}</h2><span class="icon" aria-hidden="true">${f.icon}</span></div><div class="value"><span id="value-${f.key}">—</span><span class="unit">${f.unit}</span></div><div class="scale"><div class="fill" id="fill-${f.key}"></div></div><div class="range"><span>ช่วงจำลอง</span><span>${f.min.toLocaleString()}–${f.max.toLocaleString()} ${f.unit}</span></div>`;
+ card.innerHTML=`<div class="cardhead"><h2>${f.label}</h2><span class="icon" aria-hidden="true">${f.icon}</span></div><div class="value"><span id="value-${f.key}">—</span><span class="unit">${f.unit}</span></div><div class="scale"><div class="fill" id="fill-${f.key}"></div></div><div class="range"><span>ช่วงค่า</span><span>${f.min.toLocaleString()}–${f.max.toLocaleString()} ${f.unit}</span></div>`;
  $('cards').append(card);const option=document.createElement('option');option.value=f.key;option.textContent=f.label;$('metric').append(option);
 }
 let records=[],latestTimestamp=null,connected=false;
